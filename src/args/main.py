@@ -5,9 +5,10 @@ from dataclasses import fields, dataclass
 class Args:
     @classmethod
     def parse(cls, optionsClass: dataclass, *args: str):
-        # flag = fields(optionsClass)[0].type.flag
+        parameter = args
+        flag = fields(optionsClass)[0].type.flag
 
-        return optionsClass(True)
+        return optionsClass("-"+flag in parameter)
 
 
 def option(t: type, f: str):

@@ -62,7 +62,12 @@ class TestArgs:
         BoolOption = Args.parse(BooleanOption, "-l")
         assert BoolOption.logging is True
 
-    # def test
+    def test_should_set_boolean_option_to_false_if_flag_not_present(self):
+        @dataclass
+        class BooleanOption:
+            logging: option(bool, "l")
+        BoolOption = Args.parse(BooleanOption)
+        assert BoolOption.logging is False
 
     # TODO: Integer -p 8080
     # TODO: String -d /usr/logs
