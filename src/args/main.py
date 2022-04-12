@@ -1,14 +1,20 @@
-import dataclasses
 from dataclasses import fields, dataclass
+from typing import get_type_hints
 
 
 class Args:
     @classmethod
     def parse(cls, optionsClass: dataclass, *args: str):
-        parameter = args
-        flag = fields(optionsClass)[0].type.flag
+        parameter = fields(optionsClass)[0]
+        flag = parameter.type.flag
 
-        return optionsClass("-"+flag in parameter)
+        value = None
+        if get_type_hints(parameter.type)['value'] == bool:
+            value = "-" + flag in args
+        if get_type_hints(parameter.type)['value'] == int:
+            index = args.index("-" + flag)
+            value = int(args[index+1])
+        return optionsClass(value)
 
 
 def option(t: type, f: str):

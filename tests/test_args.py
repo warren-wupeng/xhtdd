@@ -54,7 +54,6 @@ class TestArgs:
     # [-l], [-p, 8080], [-d, /usr/logs]
     # single option:
 
-    # TODO: Bool -l
     def test_should_set_boolean_option_to_true_if_flag_present(self):
         @dataclass
         class BooleanOption:
@@ -70,6 +69,14 @@ class TestArgs:
         assert BoolOption.logging is False
 
     # TODO: Integer -p 8080
+
+    def test_should_parse_int_as_option_value(self):
+        @dataclass
+        class IntOption:
+            port: option(int, "p")
+
+        intOption = Args.parse(IntOption, "-p", "8080")
+        assert intOption.port == 8080
     # TODO: String -d /usr/logs
     # TODO: multi options: -l -p 8080 -d /usr/logs
     # sad path:
