@@ -24,17 +24,7 @@ class TestArgs:
     """
     # -l -p 8080 -d /usr/logs
     # step1 确定API的形式
-    def _test_should_example1(self):
-        @dataclass
-        class Options:
-            logging: option(bool, 'l')
-            port: option(int, 'p')
-            directory: option(str, 'd')
 
-        options = Args.parse(Options, "-l", "-p", "8080", "-d", "/usr/logs")
-        assert options.logging is True
-        assert options.port == 8080
-        assert options.directory == "/usr/logs"
 
     # -g this is a list -d 1 2 -3 5
     def _test_should_example2(self):
@@ -75,7 +65,6 @@ class TestArgs:
 
         intOption = Args.parse(IntOption, "-p", "8080")
         assert intOption.port == 8080
-    # TODO: String -d /usr/logs
 
     def test_should_get_string_as_option_value(self):
         @dataclass
@@ -86,6 +75,17 @@ class TestArgs:
         assert strOption.directory == '/usr/logs'
 
     # TODO: multi options: -l -p 8080 -d /usr/logs
+    def test_should_parse_multi_options(self):
+        @dataclass
+        class MultOptions:
+            logging: option(bool, 'l')
+            port: option(int, 'p')
+            directory: option(str, 'd')
+
+        options = Args.parse(MultOptions, "-l", "-p", "8080", "-d", "/usr/logs")
+        assert options.logging is True
+        assert options.port == 8080
+        assert options.directory == "/usr/logs"
     # sad path:
     # TODO: - bool -l t / -l t f
     # TODO: - int -p/ -p 8080 8081
