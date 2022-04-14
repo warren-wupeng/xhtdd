@@ -14,6 +14,9 @@ class Args:
         if get_type_hints(parameter.type)['value'] == int:
             index = args.index("-" + flag)
             value = int(args[index+1])
+        if get_type_hints(parameter.type)['value'] == str:
+            index = args.index("-" + flag)
+            value = args[index+1]
         return optionsClass(value)
 
 

@@ -68,8 +68,6 @@ class TestArgs:
         BoolOption = Args.parse(BooleanOption)
         assert BoolOption.logging is False
 
-    # TODO: Integer -p 8080
-
     def test_should_parse_int_as_option_value(self):
         @dataclass
         class IntOption:
@@ -78,6 +76,15 @@ class TestArgs:
         intOption = Args.parse(IntOption, "-p", "8080")
         assert intOption.port == 8080
     # TODO: String -d /usr/logs
+
+    def test_should_get_string_as_option_value(self):
+        @dataclass
+        class StringOption:
+            directory: option(str, "d")
+
+        strOption = Args.parse(StringOption, "-d", "/usr/logs")
+        assert strOption.directory == '/usr/logs'
+
     # TODO: multi options: -l -p 8080 -d /usr/logs
     # sad path:
     # TODO: - bool -l t / -l t f
