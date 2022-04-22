@@ -1,5 +1,7 @@
-from dataclasses import fields, dataclass
+from dataclasses import fields, dataclass, Field
 from typing import get_type_hints
+
+from args.optionParser import BooleanOptionParser, SingleValueOptionParser
 
 
 class Args:
@@ -10,22 +12,20 @@ class Args:
         )
         return optionsClass(*values)
 
+    PARSERS = {
+        bool: BooleanOptionParser(),
+        int: SingleValueOptionParser(int),
+        str: SingleValueOptionParser(str)
+    }
+
     @classmethod
-    def parseOption(cls, args, parameter):
-        value = None
-        flag = parameter.type.flag
-        if get_type_hints(parameter.type)['value'] == bool:
-            value = "-" + flag in args
-        if get_type_hints(parameter.type)['value'] == int:
-            index = args.index("-" + flag)
-            value = int(args[index + 1])
-        if get_type_hints(parameter.type)['value'] == str:
-            index = args.index("-" + flag)
-            value = args[index + 1]
-        return value
+    def parseOption(cls, args, option: Field):
+        # flag = option.type.flag
+        return cls.PARSERS.get(
+            get_type_hints(option.type)['value']).parse(args, option)
 
 
-def option(t: type, f: str):
+def optionFactory(t: type, f: str):
     class Option:
         value: t
         flag = f

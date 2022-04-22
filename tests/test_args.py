@@ -1,6 +1,6 @@
 from dataclasses import dataclass
 
-from args.main import Args, option
+from args.main import Args, optionFactory
 
 
 class TestArgs:
@@ -25,13 +25,12 @@ class TestArgs:
     # -l -p 8080 -d /usr/logs
     # step1 确定API的形式
 
-
     # -g this is a list -d 1 2 -3 5
     def _test_should_example2(self):
         @dataclass
         class ListOptions:
-            group: list[option(str, 'g')]
-            decimals: list[option(int, 'd')]
+            group: list[optionFactory(str, 'g')]
+            decimals: list[optionFactory(int, 'd')]
 
         listOptions = Args.parse(
             ListOptions,
@@ -47,21 +46,21 @@ class TestArgs:
     def test_should_set_boolean_option_to_true_if_flag_present(self):
         @dataclass
         class BooleanOption:
-            logging: option(bool, "l")
+            logging: optionFactory(bool, "l")
         BoolOption = Args.parse(BooleanOption, "-l")
         assert BoolOption.logging is True
 
     def test_should_set_boolean_option_to_false_if_flag_not_present(self):
         @dataclass
         class BooleanOption:
-            logging: option(bool, "l")
+            logging: optionFactory(bool, "l")
         BoolOption = Args.parse(BooleanOption)
         assert BoolOption.logging is False
 
     def test_should_parse_int_as_option_value(self):
         @dataclass
         class IntOption:
-            port: option(int, "p")
+            port: optionFactory(int, "p")
 
         intOption = Args.parse(IntOption, "-p", "8080")
         assert intOption.port == 8080
@@ -69,7 +68,7 @@ class TestArgs:
     def test_should_get_string_as_option_value(self):
         @dataclass
         class StringOption:
-            directory: option(str, "d")
+            directory: optionFactory(str, "d")
 
         strOption = Args.parse(StringOption, "-d", "/usr/logs")
         assert strOption.directory == '/usr/logs'
@@ -78,9 +77,9 @@ class TestArgs:
     def test_should_parse_multi_options(self):
         @dataclass
         class MultOptions:
-            logging: option(bool, 'l')
-            port: option(int, 'p')
-            directory: option(str, 'd')
+            logging: optionFactory(bool, 'l')
+            port: optionFactory(int, 'p')
+            directory: optionFactory(str, 'd')
 
         options = Args.parse(MultOptions, "-l", "-p", "8080", "-d", "/usr/logs")
         assert options.logging is True
